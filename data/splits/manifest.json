@@ -1,0 +1,56 @@
+{
+  "seed": 150,
+  "eval_size": 50000,
+  "card_encoding": "card = 4*rank + suit; rank 0..12 = 2..A; suit 0..3 = h,s,d,c",
+  "dedup_key": "unordered 5-card set (poker_env.hand_index)",
+  "splits": {
+    "train": {
+      "source_file": "poker-hand-testing.data",
+      "n_hands": 771352,
+      "n_states": 133131,
+      "class_counts": {
+        "0": 386593,
+        "1": 325932,
+        "2": 36666,
+        "3": 16319,
+        "4": 3004,
+        "5": 1539,
+        "6": 1107,
+        "7": 181,
+        "8": 11
+      }
+    },
+    "dev": {
+      "source_file": "poker-hand-training-true.data",
+      "n_hands": 24898,
+      "n_states": 22602,
+      "class_counts": {
+        "0": 12441,
+        "1": 10545,
+        "2": 1202,
+        "3": 512,
+        "4": 93,
+        "5": 54,
+        "6": 36,
+        "7": 6,
+        "8": 5,
+        "9": 4
+      }
+    },
+    "eval": {
+      "source_file": "poker-hand-testing.data",
+      "n_hands": 50000,
+      "n_states": 41542,
+      "class_counts": {
+        "0": 25059,
+        "1": 21127,
+        "2": 2377,
+        "3": 1058,
+        "4": 195,
+        "5": 100,
+        "6": 72,
+        "7": 12
+      }
+    }
+  }
+}
