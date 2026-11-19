@@ -1,0 +1,302 @@
+{
+  "optimal_9_6": {
+    "eval_mean": 0.9914330527511198,
+    "eval_ci95": 0.008382560871313024,
+    "deal_return": 0.9954390436951244,
+    "by_class": {
+      "nothing": 0.5665346046493284,
+      "one_pair": 1.0560103216147514,
+      "two_pair": 2.595744680851064,
+      "three_of_a_kind": 4.30249768732655,
+      "straight": 4.073867975995635,
+      "flush": 6.0,
+      "full_house": 9.0,
+      "four_of_a_kind": 25.0
+    }
+  },
+  "abstractions": {
+    "canonical": {
+      "n_states": 134459,
+      "n_actions": 32,
+      "table_entries": 4302688,
+      "ceiling_deal_return": 0.9954390436951244,
+      "ceiling_eval_mean": 0.9914330527511198,
+      "pct_of_optimal": 100.0
+    },
+    "ranks": {
+      "n_states": 6175,
+      "n_actions": 32,
+      "table_entries": 197600,
+      "ceiling_deal_return": 0.9477144905150894,
+      "ceiling_eval_mean": 0.9432483484336731,
+      "pct_of_optimal": 95.20567798879188
+    },
+    "coarse": {
+      "n_states": 484,
+      "n_actions": 11,
+      "table_entries": 5324,
+      "ceiling_deal_return": 0.9937213204535026,
+      "ceiling_eval_mean": 0.9897001249358678,
+      "pct_of_optimal": 99.82744064013748
+    }
+  },
+  "paytables": {
+    "job_9_6": {
+      "kind": "game",
+      "payouts": {
+        "nothing": 0.0,
+        "low_pair": 0.0,
+        "jacks_or_better": 1.0,
+        "two_pair": 2.0,
+        "three_of_a_kind": 3.0,
+        "straight": 4.0,
+        "flush": 6.0,
+        "full_house": 9.0,
+        "four_of_a_kind": 25.0,
+        "straight_flush": 50.0,
+        "royal_flush": 800.0
+      },
+      "optimal_return_own_table": 0.9954390436951244,
+      "return_on_9_6": 0.9954390436951244,
+      "return_on_9_6_over_ties": [
+        0.9954390436951244,
+        0.9954390436951244
+      ],
+      "loss_vs_9_6_optimal": 0.0,
+      "std_on_9_6": 4.417541898735774,
+      "p_paying_hand": 0.45456533076690614,
+      "pct_hands_hold_differs": 0.0,
+      "examples": []
+    },
+    "job_8_5": {
+      "kind": "game",
+      "payouts": {
+        "nothing": 0.0,
+        "low_pair": 0.0,
+        "jacks_or_better": 1.0,
+        "two_pair": 2.0,
+        "three_of_a_kind": 3.0,
+        "straight": 4.0,
+        "flush": 5.0,
+        "full_house": 8.0,
+        "four_of_a_kind": 25.0,
+        "straight_flush": 50.0,
+        "royal_flush": 800.0
+      },
+      "optimal_return_own_table": 0.9729843375055875,
+      "return_on_9_6": 0.9953995768432597,
+      "return_on_9_6_over_ties": [
+        0.9953995768432597,
+        0.9953995768432597
+      ],
+      "loss_vs_9_6_optimal": 3.94668518646224e-05,
+      "std_on_9_6": 4.426599903034198,
+      "p_paying_hand": 0.45497760989551544,
+      "pct_hands_hold_differs": 0.42155323667928707,
+      "examples": [
+        {
+          "hand": "7h 8h Ts Jh Kd",
+          "hold_9_6": "7h 8h Jh",
+          "hold_job_8_5": "Jh Kd",
+          "value_lost_9_6": 0.03928461301264258
+        },
+        {
+          "hand": "7h 8s Th Jh Kd",
+          "hold_9_6": "7h Th Jh",
+          "hold_job_8_5": "Jh Kd",
+          "value_lost_9_6": 0.03928461301264258
+        },
+        {
+          "hand": "3h 7s 9s Js Qd",
+          "hold_9_6": "7s 9s Js",
+          "hold_job_8_5": "Js Qd",
+          "value_lost_9_6": 0.038297872340425476
+        }
+      ]
+    },
+    "job_9_6_royal250": {
+      "kind": "game",
+      "payouts": {
+        "nothing": 0.0,
+        "low_pair": 0.0,
+        "jacks_or_better": 1.0,
+        "two_pair": 2.0,
+        "three_of_a_kind": 3.0,
+        "straight": 4.0,
+        "flush": 6.0,
+        "full_house": 9.0,
+        "four_of_a_kind": 25.0,
+        "straight_flush": 50.0,
+        "royal_flush": 250.0
+      },
+      "optimal_return_own_table": 0.9837345694844494,
+      "return_on_9_6": 0.9944181016503091,
+      "return_on_9_6_over_ties": [
+        0.9944181016503091,
+        0.9944181016503091
+      ],
+      "loss_vs_9_6_optimal": 0.0010209420448152873,
+      "std_on_9_6": 4.015393019299085,
+      "p_paying_hand": 0.454257794492206,
+      "pct_hands_hold_differs": 3.3996675593314247,
+      "examples": [
+        {
+          "hand": "9h Ts Td Js As",
+          "hold_9_6": "Ts Js As",
+          "hold_job_9_6_royal250": "Ts Td",
+          "value_lost_9_6": 0.5019426456984273
+        },
+        {
+          "hand": "8h Ts Td Qs As",
+          "hold_9_6": "Ts Qs As",
+          "hold_job_9_6_royal250": "Ts Td",
+          "value_lost_9_6": 0.5019426456984273
+        },
+        {
+          "hand": "9h Ts Td Ks As",
+          "hold_9_6": "Ts Ks As",
+          "hold_job_9_6_royal250": "Ts Td",
+          "value_lost_9_6": 0.5019426456984273
+        }
+      ]
+    },
+    "win_only": {
+      "kind": "game",
+      "payouts": {
+        "nothing": 0.0,
+        "low_pair": 0.0,
+        "jacks_or_better": 1.0,
+        "two_pair": 1.0,
+        "three_of_a_kind": 1.0,
+        "straight": 1.0,
+        "flush": 1.0,
+        "full_house": 1.0,
+        "four_of_a_kind": 1.0,
+        "straight_flush": 1.0,
+        "royal_flush": 1.0
+      },
+      "optimal_return_own_table": 0.4783326086860176,
+      "return_on_9_6": 0.8211634809368199,
+      "return_on_9_6_over_ties": [
+        0.7075381717083118,
+        0.8814368910907482
+      ],
+      "loss_vs_9_6_optimal": 0.17427556275830447,
+      "std_on_9_6": 3.587115952167319,
+      "p_paying_hand": 0.4783326086860176,
+      "pct_hands_hold_differs": 35.669498568658234,
+      "examples": [
+        {
+          "hand": "Th Jh Js Qh Kh",
+          "hold_9_6": "Th Jh Qh Kh",
+          "hold_win_only": "Jh Js",
+          "value_lost_9_6": 18.123034227567068
+        },
+        {
+          "hand": "Th Jh Qh Qs Kh",
+          "hold_9_6": "Th Jh Qh Kh",
+          "hold_win_only": "Qh Qs",
+          "value_lost_9_6": 18.123034227567068
+        },
+        {
+          "hand": "Th Jh Qh Kh Ks",
+          "hold_9_6": "Th Jh Qh Kh",
+          "hold_win_only": "Kh Ks",
+          "value_lost_9_6": 18.123034227567068
+        }
+      ]
+    },
+    "job_9_6_log1p": {
+      "kind": "training_reward",
+      "payouts": {
+        "nothing": 0.0,
+        "low_pair": 0.0,
+        "jacks_or_better": 0.6931471805599453,
+        "two_pair": 1.0986122886681098,
+        "three_of_a_kind": 1.3862943611198906,
+        "straight": 1.6094379124341003,
+        "flush": 1.9459101490553132,
+        "full_house": 2.302585092994046,
+        "four_of_a_kind": 3.258096538021482,
+        "straight_flush": 3.9318256327243257,
+        "royal_flush": 6.68586094706836
+      },
+      "optimal_return_own_table": 0.47111789989289143,
+      "return_on_9_6": 0.9862866890442019,
+      "return_on_9_6_over_ties": [
+        0.9862866890442019,
+        0.9862866890442019
+      ],
+      "loss_vs_9_6_optimal": 0.009152354650922456,
+      "std_on_9_6": 3.569949271226058,
+      "p_paying_hand": 0.4610144581964552,
+      "pct_hands_hold_differs": 5.673654077015421,
+      "examples": [
+        {
+          "hand": "Th Jh Qh Kh Ks",
+          "hold_9_6": "Th Jh Qh Kh",
+          "hold_job_9_6_log1p": "Kh Ks",
+          "value_lost_9_6": 18.123034227567068
+        },
+        {
+          "hand": "Th Jh Js Qh Kh",
+          "hold_9_6": "Th Jh Qh Kh",
+          "hold_job_9_6_log1p": "Jh Js",
+          "value_lost_9_6": 18.123034227567068
+        },
+        {
+          "hand": "Th Jh Qh Qs Kh",
+          "hold_9_6": "Th Jh Qh Kh",
+          "hold_job_9_6_log1p": "Qh Qs",
+          "value_lost_9_6": 18.123034227567068
+        }
+      ]
+    },
+    "job_9_6_clip25": {
+      "kind": "training_reward",
+      "payouts": {
+        "nothing": 0.0,
+        "low_pair": 0.0,
+        "jacks_or_better": 1.0,
+        "two_pair": 2.0,
+        "three_of_a_kind": 3.0,
+        "straight": 4.0,
+        "flush": 6.0,
+        "full_house": 9.0,
+        "four_of_a_kind": 25.0,
+        "straight_flush": 25.0,
+        "royal_flush": 25.0
+      },
+      "optimal_return_own_table": 0.9772995070920633,
+      "return_on_9_6": 0.9919463312908842,
+      "return_on_9_6_over_ties": [
+        0.9919463312908842,
+        0.9919463312908842
+      ],
+      "loss_vs_9_6_optimal": 0.003492712404240206,
+      "std_on_9_6": 3.700396546175926,
+      "p_paying_hand": 0.45369403390325846,
+      "pct_hands_hold_differs": 4.749746052267061,
+      "examples": [
+        {
+          "hand": "9h Ts Js Qs Ks",
+          "hold_9_6": "Ts Js Qs Ks",
+          "hold_job_9_6_clip25": "9h Ts Js Qs Ks",
+          "value_lost_9_6": 15.595744680851062
+        },
+        {
+          "hand": "Th Jh Qh Kh As",
+          "hold_9_6": "Th Jh Qh Kh",
+          "hold_job_9_6_clip25": "Th Jh Qh Kh As",
+          "value_lost_9_6": 15.595744680851062
+        },
+        {
+          "hand": "Th Js Qs Ks As",
+          "hold_9_6": "Js Qs Ks As",
+          "hold_job_9_6_clip25": "Th Js Qs Ks As",
+          "value_lost_9_6": 14.46808510638298
+        }
+      ]
+    }
+  }
+}
