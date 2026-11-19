@@ -9,7 +9,7 @@
 | 1. Dataset and poker environment | Ganesh | ✅ Done (this commit) |
 | 2. Q-learning agent | Dustin | — |
 | 3. Baseline strategies | Andrew | — |
-| 4. State abstraction and reward design | Raymond | — |
+| 4. State abstraction and reward design | Raymond | ✅ Done (see below) |
 | 5. Evaluation and plots | Ryan | — |
 
 ## What's in the repo (Task 1)
@@ -23,6 +23,21 @@
 | `poker.ipynb` | Validates every data claim in the proposal and tests the environment, with plots and tables. |
 | `test_poker_env.py` | Unit tests: `python test_poker_env.py` |
 | `report/task1_data_environment.md` | Report write-up for data processing and the environment. |
+
+## What's in the repo (Task 4)
+
+| File | What it is |
+|---|---|
+| `paytables.py` | Alternative paytables (8/5, royal = 250, win-only) and training-reward transforms (log1p, clip at 25), all in the shared dict format. `get_paytable(name)`. |
+| `exact_values.py` | Exact Q*(s, a) for **all** 134,459 × 32 state-action pairs in about 4 s, for any paytable. Scores any policy with no Monte Carlo noise. |
+| `abstraction.py` | Three state abstractions behind one interface: `canonical` (134,459 × 32), `ranks` (6,175 × 32), `coarse` (484 states × 11 hold rules). |
+| `task4_experiments.py` | Exact analysis plus the abstraction and reward training sweeps. Writes `results/task4/` and `report/figures/task4_*.png`. |
+| `test_task4.py` | Unit tests: `python test_task4.py` |
+| `report/task4_abstraction_rewards.md` | Report write-up for state abstraction and reward design. |
+
+- **Dustin (Q-learning):** `ev.q_table()[state_id]` is the true Q* row for any state, so you can measure how far your table is from it. Any abstraction plugs in with `z, sid, perm = ab.encode(hand)` and `mask = ab.to_mask(a, sid, perm)`; the Q-table is `(ab.n_states, ab.n_actions)`.
+- **Andrew (baselines):** `ev.optimal_masks()` is the exact optimal policy (0.995439 on a uniform deal), a ceiling for every baseline.
+- **Ryan (evaluation):** `ev.expected_return(canon_masks, states=eval["state_id"])` gives a policy's exact eval score; `ab.greedy_canonical_masks(Q)` turns a Q-table into per-state masks.
 
 ## Quick start
 

@@ -1,0 +1,134 @@
+{
+  "config": {
+    "episodes": 50000000,
+    "batch": 50000,
+    "checkpoints": [
+      10000,
+      18000,
+      34000,
+      62000,
+      114000,
+      209000,
+      385000,
+      707000,
+      1299000,
+      2387000,
+      4387000,
+      8060000,
+      14810000,
+      27212000,
+      50000000
+    ],
+    "abstraction": "canonical",
+    "reward": "job_9_6",
+    "seed": 1
+  },
+  "seed": 1,
+  "episodes": 50000000,
+  "eval_mean": 0.8331685093475034,
+  "eval_ci95": 0.007718254366602666,
+  "deal_return": 0.8397295303269899,
+  "by_class": {
+    "nothing": 0.4299386468790416,
+    "one_pair": 0.9005837250705635,
+    "two_pair": 2.4950208744661695,
+    "three_of_a_kind": 3.923440433352324,
+    "straight": 3.798580839498164,
+    "flush": 2.616639436118385,
+    "full_house": 8.250693802035151,
+    "four_of_a_kind": 14.988233126176029
+  },
+  "runtime_s": 609.6607551574707,
+  "curve": [
+    {
+      "episodes": 10000,
+      "eval_mean": 0.3401716407184379,
+      "deal_return": 0.3409130655581539,
+      "pct_pairs_visited": 0.23211071776526676
+    },
+    {
+      "episodes": 18000,
+      "eval_mean": 0.34337525614512704,
+      "deal_return": 0.3443736493865745,
+      "pct_pairs_visited": 0.41722755635546893
+    },
+    {
+      "episodes": 34000,
+      "eval_mean": 0.34964789230340976,
+      "deal_return": 0.35051262971966257,
+      "pct_pairs_visited": 0.7863456518343881
+    },
+    {
+      "episodes": 62000,
+      "eval_mean": 0.3594231150991011,
+      "deal_return": 0.36046672821888914,
+      "pct_pairs_visited": 1.4268754787704803
+    },
+    {
+      "episodes": 114000,
+      "eval_mean": 0.37666471608844937,
+      "deal_return": 0.37710671921652456,
+      "pct_pairs_visited": 2.60544106381871
+    },
+    {
+      "episodes": 209000,
+      "eval_mean": 0.4009813227409955,
+      "deal_return": 0.4012047639338379,
+      "pct_pairs_visited": 4.714913096185454
+    },
+    {
+      "episodes": 385000,
+      "eval_mean": 0.43049070946367485,
+      "deal_return": 0.4320300304290909,
+      "pct_pairs_visited": 8.461989342476144
+    },
+    {
+      "episodes": 707000,
+      "eval_mean": 0.4620537065945908,
+      "deal_return": 0.4647938390143807,
+      "pct_pairs_visited": 14.826080812738457
+    },
+    {
+      "episodes": 1299000,
+      "eval_mean": 0.4946231008977541,
+      "deal_return": 0.4986470699606502,
+      "pct_pairs_visited": 24.997025115462705
+    },
+    {
+      "episodes": 2387000,
+      "eval_mean": 0.5316087293432138,
+      "deal_return": 0.5365974141495289,
+      "pct_pairs_visited": 39.56912516082969
+    },
+    {
+      "episodes": 4387000,
+      "eval_mean": 0.5883940059102741,
+      "deal_return": 0.5954359631383631,
+      "pct_pairs_visited": 57.2096559174172
+    },
+    {
+      "episodes": 8060000,
+      "eval_mean": 0.6684276880736457,
+      "deal_return": 0.6769752307284067,
+      "pct_pairs_visited": 73.7597985259447
+    },
+    {
+      "episodes": 14810000,
+      "eval_mean": 0.7494594100495521,
+      "deal_return": 0.7555026912311749,
+      "pct_pairs_visited": 84.94889706155779
+    },
+    {
+      "episodes": 27212000,
+      "eval_mean": 0.8061791198033298,
+      "deal_return": 0.81326105097254,
+      "pct_pairs_visited": 89.05221573118943
+    },
+    {
+      "episodes": 50000000,
+      "eval_mean": 0.8331685093475034,
+      "deal_return": 0.8397295303269899,
+      "pct_pairs_visited": 90.3407823202612
+    }
+  ]
+}

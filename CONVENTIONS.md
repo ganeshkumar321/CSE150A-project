@@ -40,7 +40,7 @@ Replacement cards come uniformly, without replacement, from the 47 cards outside
 - A paytable is a dict over the 11 keys in `pe.CATEGORY_NAMES`:
   `nothing, low_pair, jacks_or_better, two_pair, three_of_a_kind, straight, flush, full_house, four_of_a_kind, straight_flush, royal_flush`.
 - Main table is `pe.JACKS_OR_BETTER` (9/6): 0, 0, 1, 2, 3, 4, 6, 9, 25, 50, 800.
-- Task 4 owns the alternative paytables, which use the same dict format.
+- Task 4 owns the alternative paytables, which use the same dict format: `paytables.get_paytable(name)` with names `job_9_6` (main), `job_8_5`, `job_9_6_royal250`, `win_only`, and the training-only rewards `job_9_6_log1p`, `job_9_6_clip25`. Always **score** policies on `job_9_6`.
 
 ## Data
 - `from poker_data import load_split; s = load_split("train")` returns `cards (N,5)`, `uci_class`, `state_id`, `source_row`.
