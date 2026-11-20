@@ -8,7 +8,7 @@
 |---|---|---|
 | 1. Dataset and poker environment | Ganesh | ✅ Done (this commit) |
 | 2. Q-learning agent | Dustin | — |
-| 3. Baseline strategies | Andrew | — |
+| 3. Baseline strategies | Andrew | ✅ Done |
 | 4. State abstraction and reward design | Raymond | — |
 | 5. Evaluation and plots | Ryan | — |
 
@@ -23,6 +23,10 @@
 | `poker.ipynb` | Validates every data claim in the proposal and tests the environment, with plots and tables. |
 | `test_poker_env.py` | Unit tests: `python test_poker_env.py` |
 | `report/task1_data_environment.md` | Report write-up for data processing and the environment. |
+| `baselines.py` | Task 3: random, keep-all, pairs, basic and strategy heuristics, and an exact oracle, all as `policy(hand) -> mask`. `python baselines.py` prints the representative-hand table. |
+| `baselines_check.py` | Exact comparison of every baseline against the optimum on sampled eval hands. |
+| `test_baselines.py` | Unit tests: `python test_baselines.py` |
+| `report/task3_baselines.md` | Report write-up for the baseline strategies. |
 
 ## Quick start
 
@@ -74,6 +78,23 @@ The data is deduplicated on the unordered 5-card set, and the three splits share
 - Our hand evaluator reproduces all 1,025,010 UCI labels, and the canonical state count is 134,459, both confirmed by enumeration.
 - **The eval split has no straight flushes or royal flushes.** By chance we would expect fewer than 1 in 50k hands. Ryan: use constructed hands (e.g. `pe.parse_hand("Th Jh Qh Kh Ah")`) for per-class results on those two classes.
 - 99.35% of eval hands share a canonical state with some train hand. This is intended: a tabular agent can only act well on states it has seen.
+
+## Baselines (Task 3)
+
+```python
+import baselines as bl
+bl.POLICIES            # name -> factory; call it to get policy(hand) -> mask
+pol = bl.strategy_policy                       # best heuristic (16 priority rules)
+mask, rule = bl.explain(hand, bl.STRATEGY_RULES)   # which rule fired
+rand = bl.random_policy(seed=0)                # seeded; independent of the draw rng
+oracle = bl.oracle_policy(paytable)            # exact optimum, ~0.1 s per new state
+```
+
+Exact mean payout on 3,000 eval hands: random 0.340, keep all 0.341, pairs 0.880, basic 0.929, **strategy 1.002**, oracle 1.004. The strategy policy makes the optimal hold on 95.3% of hands. Details are in `report/task3_baselines.md`.
+
+- **Ryan:** the policies are plain functions, so they plug straight into the runner. The oracle is slow the first time it sees each state, so run it on a subsample or warm its cache once.
+- **Raymond:** the heuristics are tuned for `pe.JACKS_OR_BETTER`. `oracle_policy(paytable)` stays optimal under alternative paytables.
+- **Dustin:** `bl.regret(hand, mask)` gives the exact EV lost by any action, which helps when checking a trained Q-table's greedy policy.
 
 ## Useful tools for other tasks
 
