@@ -7,7 +7,7 @@
 | Task | Owner | Status |
 |---|---|---|
 | 1. Dataset and poker environment | Ganesh | ✅ Done (this commit) |
-| 2. Q-learning agent | Dustin | — |
+| 2. Q-learning agent | Dustin | ✅ Implemented and tested; final comparisons pending |
 | 3. Baseline strategies | Andrew | — |
 | 4. State abstraction and reward design | Raymond | — |
 | 5. Evaluation and plots | Ryan | — |
@@ -85,3 +85,57 @@ The data is deduplicated on the unordered 5-card set, and the three splits share
 ## Rebuilding the split (optional)
 
 The split is already committed. To rebuild it, download the UCI Poker Hand dataset (`poker+hand.zip`), extract it into `data/raw/`, and run `python poker_data.py`. The rebuild is deterministic with seed 150.
+
+## Task 2: Q-learning
+
+`q_learning.py` provides `QLearningAgent` and `train`. Training settings are
+ordinary constructor arguments, such as `QLearningAgent(alpha=0.1, alpha_decay=0)`.
+`train_q_learning.py` trains on the shared training split and writes checkpoints
+and training statistics. The trainer itself requires only NumPy. Report text,
+schedule definitions, and proposed experiment budgets are in
+[`report/task2_q_learning.md`](report/task2_q_learning.md).
+
+Run from this directory:
+
+```sh
+python -m unittest test_q_learning -v
+python test_poker_env.py
+
+# 100k-episode integration run; use a fresh output directory
+python train_q_learning.py --episodes 100000 --seed 0 --output /tmp/poker-q-smoke
+
+# five-million-episode default configuration, one of seeds 0..4
+python train_q_learning.py --episodes 5000000 --seed 0 --output /tmp/poker-q-default-seed0
+
+# resume for one million additional episodes, restoring all settings and RNG state
+python train_q_learning.py --resume /tmp/poker-q-default-seed0/checkpoint_005000000.npz \
+    --episodes 1000000 --output /tmp/poker-q-default-seed0
+```
+
+The proposed comparisons change one setting from the default per run:
+
+| Variant | Additional CLI flags |
+|---|---|
+| Constant alpha 0.1 | `--alpha 0.1 --alpha-decay 0` |
+| Constant epsilon 0.2 | `--epsilon 0.2 --epsilon-decay 0 --epsilon-min 0` |
+| Optimistic initialization | `--initial-q 5` |
+
+Use `--paytable path.json` for a complete alternative table with the 11 shared
+category keys. Logging defaults to every 10,000 episodes; checkpoints default to
+every 100,000 episodes and the final episode. Q is indexed by canonical masks;
+the callable policy returns masks in original positions:
+
+```python
+from q_learning import QLearningAgent
+
+policy = QLearningAgent.load("/tmp/poker-q-smoke/checkpoint_000100000.npz")
+mask = policy(hand)  # greedy; no exploration or training RNG changes
+```
+
+For custom state representations, supply an encoder returning `(state_id, perm)`
+and constructor arguments `n_states` and a distinct `state_encoding` name. Pass
+the same encoder to `QLearningAgent.load(path, encoder=...)`. The library `train`
+accepts simulator/reward callables and a paytable for synthetic tests or Task 4.
+
+`results.json` stores exploratory training-window payouts. Held-out evaluation
+fields are reserved as null/empty for Task 5; final performance is not yet measured.
