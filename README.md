@@ -7,8 +7,8 @@
 | Task | Owner | Status |
 |---|---|---|
 | 1. Dataset and poker environment | Ganesh | ✅ Done (this commit) |
-| 2. Q-learning agent | Dustin | — |
-| 3. Baseline strategies | Andrew | — |
+| 2. Q-learning agent | Dustin | ✅ Implemented and tested; final comparisons pending |
+| 3. Baseline strategies | Andrew | ✅ Done |
 | 4. State abstraction and reward design | Raymond | ✅ Done (see below) |
 | 5. Evaluation and plots | Ryan | — |
 
@@ -23,6 +23,10 @@
 | `poker.ipynb` | Validates every data claim in the proposal and tests the environment, with plots and tables. |
 | `test_poker_env.py` | Unit tests: `python test_poker_env.py` |
 | `report/task1_data_environment.md` | Report write-up for data processing and the environment. |
+| `baselines.py` | Task 3: random, keep-all, pairs, basic and strategy heuristics, and an exact oracle, all as `policy(hand) -> mask`. `python baselines.py` prints the representative-hand table. |
+| `baselines_check.py` | Exact comparison of every baseline against the optimum on sampled eval hands. |
+| `test_baselines.py` | Unit tests: `python test_baselines.py` |
+| `report/task3_baselines.md` | Report write-up for the baseline strategies. |
 
 ## What's in the repo (Task 4)
 
@@ -35,7 +39,7 @@
 | `test_task4.py` | Unit tests: `python test_task4.py` |
 | `report/task4_abstraction_rewards.md` | Report write-up for state abstraction and reward design. |
 
-- **Dustin (Q-learning):** `ev.q_table()[state_id]` is the true Q* row for any state, so you can measure how far your table is from it. Any abstraction plugs in with `z, sid, perm = ab.encode(hand)` and `mask = ab.to_mask(a, sid, perm)`; the Q-table is `(ab.n_states, ab.n_actions)`.
+- **Dustin (Q-learning):** `ev.q_table()[state_id]` is the true Q* row for any state, so you can measure how far your table is from it. `canonical` and `ranks` plug straight into `QLearningAgent(encoder=ab.state_encoder(), n_states=ab.n_states, state_encoding=ab.name)`. `coarse` uses 11 hold rules instead of 32 masks, so it goes through `z, sid, perm = ab.encode(hand)` and `mask = ab.to_mask(a, sid, perm)` with a `(ab.n_states, ab.n_actions)` table (as in `task4_experiments.py`).
 - **Andrew (baselines):** `ev.optimal_masks()` is the exact optimal policy (0.995439 on a uniform deal), a ceiling for every baseline.
 - **Ryan (evaluation):** `ev.expected_return(canon_masks, states=eval["state_id"])` gives a policy's exact eval score; `ab.greedy_canonical_masks(Q)` turns a Q-table into per-state masks.
 
@@ -90,6 +94,23 @@ The data is deduplicated on the unordered 5-card set, and the three splits share
 - **The eval split has no straight flushes or royal flushes.** By chance we would expect fewer than 1 in 50k hands. Ryan: use constructed hands (e.g. `pe.parse_hand("Th Jh Qh Kh Ah")`) for per-class results on those two classes.
 - 99.35% of eval hands share a canonical state with some train hand. This is intended: a tabular agent can only act well on states it has seen.
 
+## Baselines (Task 3)
+
+```python
+import baselines as bl
+bl.POLICIES            # name -> factory; call it to get policy(hand) -> mask
+pol = bl.strategy_policy                       # best heuristic (16 priority rules)
+mask, rule = bl.explain(hand, bl.STRATEGY_RULES)   # which rule fired
+rand = bl.random_policy(seed=0)                # seeded; independent of the draw rng
+oracle = bl.oracle_policy(paytable)            # exact optimum, ~0.1 s per new state
+```
+
+Exact mean payout on 3,000 eval hands: random 0.340, keep all 0.341, pairs 0.880, basic 0.929, **strategy 1.002**, oracle 1.004. The strategy policy makes the optimal hold on 95.3% of hands. Details are in `report/task3_baselines.md`.
+
+- **Ryan:** the policies are plain functions, so they plug straight into the runner. The oracle is slow the first time it sees each state, so run it on a subsample or warm its cache once.
+- **Raymond:** the heuristics are tuned for `pe.JACKS_OR_BETTER`. `oracle_policy(paytable)` stays optimal under alternative paytables.
+- **Dustin:** `bl.regret(hand, mask)` gives the exact EV lost by any action, which helps when checking a trained Q-table's greedy policy.
+
 ## Useful tools for other tasks
 
 - **Dustin (Q-learning):** a scalar episode takes about 18 µs. `pe.exact_action_values(hand)` gives the true Q*(s, ·) for all 32 actions by enumeration (a few seconds per hand), which is good for checking that the trainer converges to the right values.
@@ -100,3 +121,57 @@ The data is deduplicated on the unordered 5-card set, and the three splits share
 ## Rebuilding the split (optional)
 
 The split is already committed. To rebuild it, download the UCI Poker Hand dataset (`poker+hand.zip`), extract it into `data/raw/`, and run `python poker_data.py`. The rebuild is deterministic with seed 150.
+
+## Task 2: Q-learning
+
+`q_learning.py` provides `QLearningAgent` and `train`. Training settings are
+ordinary constructor arguments, such as `QLearningAgent(alpha=0.1, alpha_decay=0)`.
+`train_q_learning.py` trains on the shared training split and writes checkpoints
+and training statistics. The trainer itself requires only NumPy. Report text,
+schedule definitions, and proposed experiment budgets are in
+[`report/task2_q_learning.md`](report/task2_q_learning.md).
+
+Run from this directory:
+
+```sh
+python -m unittest test_q_learning -v
+python test_poker_env.py
+
+# 100k-episode integration run; use a fresh output directory
+python train_q_learning.py --episodes 100000 --seed 0 --output /tmp/poker-q-smoke
+
+# five-million-episode default configuration, one of seeds 0..4
+python train_q_learning.py --episodes 5000000 --seed 0 --output /tmp/poker-q-default-seed0
+
+# resume for one million additional episodes, restoring all settings and RNG state
+python train_q_learning.py --resume /tmp/poker-q-default-seed0/checkpoint_005000000.npz \
+    --episodes 1000000 --output /tmp/poker-q-default-seed0
+```
+
+The proposed comparisons change one setting from the default per run:
+
+| Variant | Additional CLI flags |
+|---|---|
+| Constant alpha 0.1 | `--alpha 0.1 --alpha-decay 0` |
+| Constant epsilon 0.2 | `--epsilon 0.2 --epsilon-decay 0 --epsilon-min 0` |
+| Optimistic initialization | `--initial-q 5` |
+
+Use `--paytable path.json` for a complete alternative table with the 11 shared
+category keys. Logging defaults to every 10,000 episodes; checkpoints default to
+every 100,000 episodes and the final episode. Q is indexed by canonical masks;
+the callable policy returns masks in original positions:
+
+```python
+from q_learning import QLearningAgent
+
+policy = QLearningAgent.load("/tmp/poker-q-smoke/checkpoint_000100000.npz")
+mask = policy(hand)  # greedy; no exploration or training RNG changes
+```
+
+For custom state representations, supply an encoder returning `(state_id, perm)`
+and constructor arguments `n_states` and a distinct `state_encoding` name. Pass
+the same encoder to `QLearningAgent.load(path, encoder=...)`. The library `train`
+accepts simulator/reward callables and a paytable for synthetic tests or Task 4.
+
+`results.json` stores exploratory training-window payouts. Held-out evaluation
+fields are reserved as null/empty for Task 5; final performance is not yet measured.

@@ -48,7 +48,11 @@ Replacement cards come uniformly, without replacement, from the 47 cards outside
 - train and eval come from `poker-hand-testing.data` (unbiased). dev is the deduplicated `poker-hand-training-true.data` (royal/straight flushes oversampled), used **only** for development and tuning.
 - Rebuild with `python poker_data.py` (seed 150; deterministic).
 
-## Experiments (proposal — Tasks 2/5 to confirm)
+## Experiments (Task 2 implemented; Task 5 evaluation pending)
 - Seeds: split seed `150`. Run seeds `0, 1, 2, 3, 4`, each passed as `np.random.default_rng(seed)`.
-- Checkpoints: `.npz` with `Q (134459,32) float64`, `N (134459,32) int64`, `episode`, `config` (JSON string).
-- Results: one JSON per run with `config`, `seed`, `episodes`, `eval_mean`, `eval_ci95`, `by_class`, `runtime_s`.
+- Checkpoints: `.npz` with `Q (134459,32) float64`, `N (134459,32) int64`, scalar `episode`, `config` (JSON string), and `state` (JSON string, schema version 2). Custom state encoders may change the row count, retaining 32 canonical-position actions.
+- `config` is a plain dict of agent constructor arguments: `n_states`, `state_encoding`, `seed`, `initial_q`, `alpha`, `alpha_decay`, `alpha_min`, `epsilon`, `epsilon_decay`, and `epsilon_min`. Rates evaluate to `max(minimum, initial/(1+decay*step))`. Alpha's step is previous pair visits; epsilon's step is completed episodes.
+- `state` preserves RNG state, metadata, training-window history, and training-loop runtime. CLI metadata records the training split SHA-256, sampling rule, and complete paytable. Resume restores all settings and consumes the same RNG stream.
+- Default training: sample train hands uniformly with replacement; sample-average alpha `(1,1,0)`, epsilon `(1,1e-6,0.05)`, Q initialization 0. Proposed budget: 5M episodes per seed/configuration, reports every 10k, checkpoints every 100k plus the final episode. See `report/task2_q_learning.md` for the comparison settings and limits.
+- Results: one JSON per run with `config`, `seed`, `episodes`, `eval_mean`, `eval_ci95`, `by_class`, `runtime_s`, `metadata`, `training_windows`. Task 2 leaves evaluation fields null/empty for Task 5. Training means include exploration and are not held-out learning curves.
+- Greedy policies use the lowest-numbered maximizing mask and do not advance the training RNG. During training, maximizing ties are chosen uniformly at random.
