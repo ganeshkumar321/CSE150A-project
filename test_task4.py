@@ -95,6 +95,22 @@ def test_mapped_masks_have_canonical_value():
         assert abs(pe.exact_action_value(hand, ab.to_mask(a, sid, perm)) - q[sid, ab.action_map[sid, a]]) < 1e-9
 
 
+def test_encoder_works_with_task2_agent():
+    from q_learning import QLearningAgent, train
+
+    ab = A.get_abstraction("ranks")
+    agent = QLearningAgent(encoder=ab.state_encoder(), n_states=ab.n_states, state_encoding=ab.name, seed=0)
+    hands = np.argsort(np.random.default_rng(3).random((50, 52)), axis=1)[:, :5]
+    train(agent, hands, 500, paytable=pt.JOB_9_6_CLIP25)
+    assert agent.Q.shape == (ab.n_states, 32) and agent.N.sum() == 500
+    assert 0 <= agent(hands[0]) <= 31
+    try:
+        A.get_abstraction("coarse").state_encoder()
+        assert False, "coarse uses hold rules, not 32 masks"
+    except ValueError:
+        pass
+
+
 def test_ceilings_ordered():
     opt = ev.optimal_return()
     ceil = {n: ev.expected_return(A.get_abstraction(n).best_canonical_masks()) for n in A.ABSTRACTIONS}

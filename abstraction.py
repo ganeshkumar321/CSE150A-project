@@ -216,6 +216,20 @@ class Abstraction:
         """Abstract action -> mask over the ORIGINAL hand's positions."""
         return pe.canonical_mask_to_original(int(self.action_map[sid, action]), perm)
 
+    def state_encoder(self):
+        """Encoder for Task 2's ``QLearningAgent(encoder=..., n_states=ab.n_states, state_encoding=ab.name)``.
+
+        Only for abstractions whose actions are the 32 canonical-position masks
+        (canonical, ranks); the coarse abstraction's hold rules need its own action set.
+        """
+        if self.n_actions != 32 or not (self.action_map == np.arange(32)).all():
+            raise ValueError(f"{self.name!r} does not use the 32 canonical masks")
+
+        def encode(hand):
+            z, _, perm = self.encode(hand)
+            return z, perm
+        return encode
+
     def policy(self, q_table):
         """Greedy policy(hand) -> mask from a Q-table of shape (n_states, n_actions)."""
         def act(hand):
