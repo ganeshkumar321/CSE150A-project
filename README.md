@@ -1,5 +1,65 @@
 # Five-Card Draw Poker with Tabular Q-Learning (CSE 150A)
 
+## Task 5 evaluation
+
+Task 5 is separate from the environment, learner, and baseline implementations:
+
+| File | Role |
+|---|---|
+| `evaluate_policies.py` | Runs the existing policies/simulator and loads Task 2 checkpoints. |
+| `evaluate_checkpoints.py` | Scores Task 2 checkpoints using Task 4's exact evaluator. |
+| `evaluation_results.py` | Calculates shared statistics and builds comparison tables. |
+| `plot_evaluation.py` | Draws figures from saved results and tables. |
+| `test_evaluation.py` | Checks the evaluation pipeline and compatibility with the other tasks. |
+
+Run from this repository with NumPy, pandas and matplotlib installed:
+
+```powershell
+python -m unittest test_evaluation -v
+python evaluate_policies.py --output results/task5
+python plot_evaluation.py
+```
+
+The final Task 2 exact-score records are in `results/task5-greedy/`. They contain
+four configurations, five training seeds, and checkpoints at 1–5 million episodes.
+`plot_evaluation.py` also regenerates their table and learning curve. These exact
+scores are labeled separately from the Monte Carlo baseline results. With local
+checkpoints under `runs/task2-final/`, reproduce them using:
+
+```powershell
+python evaluate_checkpoints.py
+python plot_evaluation.py
+```
+
+Checkpoints and local training logs are not committed. Training settings and
+commands are documented in `report/task2_q_learning.md` and the Task 2 section below.
+
+The default evaluates the five Task 3 baselines on all 50,000 eval hands,
+10 draws per hand, using evaluation seeds 0–4. For a quick check, use
+`--hands 100 --draws 2 --seeds 0 --output results/task5-smoke`.
+Point `plot_evaluation.py --evaluation results/task5-smoke/evaluation.json
+--output report/figures/task5-smoke` at that smoke output; do not report it as
+the full experiment.
+
+Evaluate Task 2 saved checkpoints with the same runner:
+
+```powershell
+python evaluate_policies.py --checkpoints runs/seed0/checkpoint_000100000.npz runs/seed0/checkpoint_000200000.npz --output results/task5-checkpoints
+python plot_evaluation.py --evaluation results/task5-checkpoints/evaluation.json --output report/figures/task5-checkpoints
+```
+
+Supply the actual paths from the team's training runs. Canonical and ranks
+encoders are restored automatically. The runner uses greedy actions and never
+updates the agent or consumes its training RNG. Multiple checkpoint episodes
+produce a checkpoint learning-curve figure. Evaluate multiple training seeds
+to assess training variability; evaluation seeds alone measure simulation noise.
+
+Outputs are JSON records, per-hand averages (`.npz`), CSV comparison tables,
+and PNG figures. The existing Task 4 JSON files supply a separately labeled
+exact-score learning curve (main training reward only), not newly trained
+policies. Task 4's batched learner is distinct from Task 2's agent.
+See [Task 5 methodology and results](report/task5_evaluation.md).
+
 **Team:** Ryan Cao, Dustin Pham, Andrew Pham, Ganesh Kumarappan, Raymond Tran
 
 ## Status
@@ -7,10 +67,10 @@
 | Task | Owner | Status |
 |---|---|---|
 | 1. Dataset and poker environment | Ganesh | ✅ Done (this commit) |
-| 2. Q-learning agent | Dustin | ✅ Implemented and tested; final comparisons pending |
+| 2. Q-learning agent | Dustin | ✅ Implemented and tested; configuration results in Task 5 |
 | 3. Baseline strategies | Andrew | ✅ Done |
 | 4. State abstraction and reward design | Raymond | ✅ Done (see below) |
-| 5. Evaluation and plots | Ryan | — |
+| 5. Evaluation and plots | Ryan | Baseline Monte Carlo evaluation and Task 2 exact checkpoint comparisons complete |
 
 ## What's in the repo (Task 1)
 
