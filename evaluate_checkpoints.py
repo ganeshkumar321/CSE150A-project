@@ -72,8 +72,9 @@ def main():
             raise ValueError('Saved scores use a different evaluation split')
         records = data['records']
         for record in records:
-            if record['checkpoint_sha256'] != file_hash(record['checkpoint']):
-                raise ValueError('a previously scored checkpoint has changed')
+            checkpoint = Path(record['checkpoint'])
+            if checkpoint.is_file() and record['checkpoint_sha256'] != file_hash(checkpoint):
+                raise SystemExit(f'Checkpoint changed: {checkpoint}. Use a fresh --output directory.')
     seen = {r['checkpoint'] for r in records}
     while True:
         for name in CONFIGURATIONS:
@@ -93,10 +94,10 @@ def main():
                 figures = Path('report/figures/task5')
                 figures.mkdir(parents=True,exist_ok=True)
                 greedy_figures(saved,figures)
-            print(f'Final evaluation complete: {complete}',flush=True)
-            break
+            print(f'Final evaluation complete: {complete}', flush=True)
+            return 0 if complete else 1
         time.sleep(30)
 
 
 if __name__ == '__main__':
-    main()
+    raise SystemExit(main())

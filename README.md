@@ -23,13 +23,18 @@ python plot_evaluation.py
 The final Task 2 exact-score records are in `results/task5-greedy/`. They contain
 four configurations, five training seeds, and checkpoints at 1–5 million episodes.
 `plot_evaluation.py` also regenerates their table and learning curve. These exact
-scores are labeled separately from the Monte Carlo baseline results. With local
-checkpoints under `runs/task2-final/`, reproduce them using:
+scores are labeled separately from the Monte Carlo baseline results. To train
+the 20 runs from the committed split and reproduce their exact scores, run:
 
 ```powershell
-python evaluate_checkpoints.py
-python plot_evaluation.py
+python run_task2_experiments.py --output runs/task2-reproduction
+python evaluate_checkpoints.py --runs runs/task2-reproduction --output runs/task5-reproduction
+python plot_evaluation.py --greedy-results runs/task5-reproduction/checkpoints.json --output runs/task5-reproduction/figures
 ```
+
+Use a fresh score output directory for a new sweep. The training script resumes
+from the latest checkpoint in each run directory. To regenerate the committed
+figures from the saved scores, run `python plot_evaluation.py`.
 
 Checkpoints and local training logs are not committed. Training settings and
 commands are documented in `report/task2_q_learning.md` and the Task 2 section below.
@@ -234,4 +239,5 @@ the same encoder to `QLearningAgent.load(path, encoder=...)`. The library `train
 accepts simulator/reward callables and a paytable for synthetic tests or Task 4.
 
 `results.json` stores exploratory training-window payouts. Held-out evaluation
-fields are reserved as null/empty for Task 5; final performance is not yet measured.
+fields are reserved as null/empty in the training logs. The held-out scores
+are reported in [Task 5](report/task5_evaluation.md).

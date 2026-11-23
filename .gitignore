@@ -5,9 +5,6 @@ __pycache__/
 .DS_Store
 .venv/
 runs/
-# Local orchestration only; the shared trainer is already in the repository.
-run_task2_experiments.py
-
 # Local Task 5 smoke-test outputs; keep only the full report results.
 results/task5-check/
 results/task5-smoke/
