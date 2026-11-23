@@ -190,23 +190,24 @@ def plot(runs, exact):
             return None
         x = np.array([p["episodes"] for p in group[0]["curve"]])
         y = np.array([[p["eval_mean"] for p in r["curve"]] for r in group])
-        return x, y.mean(0), y.std(0), len(group)
+        seed_sd = y.std(axis=0, ddof=1) if len(group) > 1 else np.zeros_like(x, dtype=float)
+        return x, y.mean(axis=0), seed_sd
 
     fig, ax = plt.subplots(figsize=(6.4, 4))
     for name in A.ABSTRACTIONS:
         c = curves(name, "job_9_6")
         if c is None:
             continue
-        x, m, s, k = c
+        x, m, s = c
         info = exact["abstractions"][name]
         ax.plot(x, m, color=colors[name], label=f"{name} ({info['n_states']:,} x {info['n_actions']})")
         ax.fill_between(x, m - s, m + s, color=colors[name], alpha=0.2)
         ax.axhline(info["ceiling_eval_mean"], color=colors[name], ls=":", lw=1)
-    ax.axhline(opt, color="k", ls="--", lw=1, label=f"optimal ({opt:.4f})")
-    ax.plot([], [], color="0.4", ls=":", lw=1, label="best policy the abstraction can express")
+    ax.axhline(opt, color="k", ls="--", lw=1, label=f"Eval oracle ({opt:.4f})")
+    ax.plot([], [], color="0.4", ls=":", lw=1, label="Uniform-deal optimal policies on eval hands")
     ax.set(xscale="log", xlabel="training episodes", ylabel="expected payout on eval hands (9/6)",
            title="State abstraction: learning speed vs. ceiling", ylim=(0.3, 1.02))
-    ax.legend(loc="lower right", fontsize=8)
+    ax.legend(loc="lower right", fontsize=8, title="Shading: ±1 sample SD across seeds", title_fontsize=8)
     fig.tight_layout()
     fig.savefig(os.path.join(FIGURES, "task4_abstraction_curves.png"), dpi=150)
     plt.close(fig)
@@ -219,18 +220,18 @@ def plot(runs, exact):
             c = curves("coarse", reward)
             if c is None:
                 continue
-            x, m, s, k = c
+            x, m, s = c
             ax.plot(x, m, color=colors[reward], label=reward, marker=".", ms=4)
             ax.fill_between(x, m - s, m + s, color=colors[reward], alpha=0.2)
-        ax.axhline(opt, color="k", ls="--", lw=1, label="optimal")
+        ax.axhline(opt, color="k", ls="--", lw=1, label="Eval oracle")
         ax.axhline(exact["abstractions"]["coarse"]["ceiling_eval_mean"], color="C2", ls=":", lw=1,
-                   label="coarse ceiling")
+                   label="Uniform-deal optimal coarse policy on eval hands")
         ax.set(xscale="log", xlabel="training episodes", ylim=ylim)
         if xmin:
             ax.set_xlim(left=xmin)
     axes[0].set(ylabel="expected payout on eval hands (9/6)", title="coarse abstraction, all rewards")
     axes[1].set(title="zoom: 9/6 vs. clipped vs. log rewards")
-    axes[0].legend(loc="lower right", fontsize=8)
+    axes[0].legend(loc="lower right", fontsize=8, title="Shading: ±1 sample SD across seeds", title_fontsize=8)
     fig.suptitle("Training reward vs. score on the 9/6 table")
     fig.tight_layout()
     fig.savefig(os.path.join(FIGURES, "task4_reward_curves.png"), dpi=150)
